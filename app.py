@@ -2,10 +2,27 @@ import sys
 import os
 import importlib.util
 
-# Set up path for nested Flask app
+# Find the nested Flask app
 base_dir = os.path.dirname(os.path.abspath(__file__))
-app_dir = os.path.join(base_dir, 'updated_inte_pro', 'updated_inte_pro', 'inte', 'inte')
-nested_app_file = os.path.join(app_dir, 'app.py')
+
+# Try multiple possible paths
+possible_paths = [
+    os.path.join(base_dir, 'updated_inte_pro', 'updated_inte_pro', 'inte', 'inte', 'app.py'),
+    os.path.join(base_dir, 'inte', 'inte', 'app.py'),
+    os.path.join(base_dir, 'updated_inte_pro', 'inte', 'app.py'),
+]
+
+nested_app_file = None
+app_dir = None
+
+for path in possible_paths:
+    if os.path.exists(path):
+        nested_app_file = path
+        app_dir = os.path.dirname(path)
+        break
+
+if not nested_app_file:
+    raise FileNotFoundError(f"Could not find Flask app.py in any of these locations: {possible_paths}")
 
 # Change to app directory so relative imports work
 os.chdir(app_dir)
@@ -22,6 +39,7 @@ app = flask_app_module.app
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
+
 
 import sys
 import os
