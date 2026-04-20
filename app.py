@@ -2,16 +2,62 @@ import sys
 import os
 from flask import Flask, render_template, jsonify, request
 
-# Set up paths for nested backend
+# Set up paths - find backend directory dynamically
 base_dir = os.path.dirname(os.path.abspath(__file__))
-nested_dir = os.path.join(base_dir, 'updated_inte_pro', 'updated_inte_pro', 'inte', 'inte')
-sys.path.insert(0, os.path.join(nested_dir, 'backend'))
 
-# Create Flask app with correct template and static folders
+# Try multiple possible backend locations
+possible_backend_paths = [
+    os.path.join(base_dir, 'updated_inte_pro', 'updated_inte_pro', 'inte', 'inte', 'backend'),
+    os.path.join(base_dir, 'updated_inte_pro', 'inte', 'inte', 'backend'),
+    os.path.join(base_dir, 'inte', 'inte', 'backend'),
+]
+
+# Try multiple possible template locations
+possible_template_paths = [
+    os.path.join(base_dir, 'updated_inte_pro', 'updated_inte_pro', 'inte', 'inte', 'templates'),
+    os.path.join(base_dir, 'updated_inte_pro', 'inte', 'inte', 'templates'),
+    os.path.join(base_dir, 'inte', 'inte', 'templates'),
+]
+
+# Try multiple possible static locations
+possible_static_paths = [
+    os.path.join(base_dir, 'updated_inte_pro', 'updated_inte_pro', 'inte', 'inte', 'static'),
+    os.path.join(base_dir, 'updated_inte_pro', 'inte', 'inte', 'static'),
+    os.path.join(base_dir, 'inte', 'inte', 'static'),
+]
+
+backend_path = None
+template_path = None
+static_path = None
+
+for path in possible_backend_paths:
+    if os.path.exists(path):
+        backend_path = path
+        break
+
+for path in possible_template_paths:
+    if os.path.exists(path):
+        template_path = path
+        break
+
+for path in possible_static_paths:
+    if os.path.exists(path):
+        static_path = path
+        break
+
+if not backend_path:
+    raise FileNotFoundError(f"Could not find backend directory in any of: {possible_backend_paths}")
+if not template_path:
+    raise FileNotFoundError(f"Could not find templates directory in any of: {possible_template_paths}")
+
+# Add backend to Python path
+sys.path.insert(0, backend_path)
+
+# Create Flask app with correct paths
 app = Flask(
     __name__,
-    template_folder=os.path.join(nested_dir, 'templates'),
-    static_folder=os.path.join(nested_dir, 'static')
+    template_folder=template_path,
+    static_folder=static_path if static_path else None
 )
 
 from weather_backend import get_live_readings, get_dashboard_data, get_forecast, get_dashboard_data_range
