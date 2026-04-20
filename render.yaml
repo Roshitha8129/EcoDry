@@ -4,8 +4,8 @@ services:
     env: python
     region: oregon
     plan: free
-    buildCommand: cd inte/inte && pip install -r ../../requirements.txt
-    startCommand: cd inte/inte && python app.py
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 wsgi:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11
