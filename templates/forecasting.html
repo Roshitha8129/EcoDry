@@ -137,10 +137,14 @@
                             <span class="live-indicator">LIVE</span>
                         </div>
 
-                        <!-- Forecasting Description (Dynamic Summary) -->
-                        <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px;">
-                            <p id="weatherSummaryText" style="margin: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; border-left: 3px solid var(--primary); padding-left: 10px;">Analyzing forecast conditions...</p>
-                        </div>
+                        <!-- Forecasting Description (Dynamic Summary - Collapsible) -->
+                        <details id="weatherSummary" class="summary-dropdown" open>
+                            <summary class="summary-dropdown-header">
+                                <div id="weatherSummaryHeader" class="summary-header-content">Analyzing forecast conditions...</div>
+                                <i class="fa-solid fa-chevron-down summary-chevron"></i>
+                            </summary>
+                            <div id="weatherSummaryBody" class="summary-dropdown-body"></div>
+                        </details>
 
 
 

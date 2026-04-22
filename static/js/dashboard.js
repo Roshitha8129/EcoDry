@@ -478,7 +478,10 @@ function generateGraphSummary(timestamps, data) {
     const solarStats = _stats(data?.solar);
 
     if (!tempStats || !humStats || !solarStats) {
-        return "<em>Not enough data in the selected timeframe to analyze.</em>";
+        return {
+            header: `<span style="opacity:0.7;">Not enough data in the selected timeframe to analyze.</span>`,
+            body: ""
+        };
     }
 
     const score = _scoreDrying(tempStats, humStats, solarStats);
@@ -488,16 +491,12 @@ function generateGraphSummary(timestamps, data) {
         ? `${timestamps[0]} → ${timestamps[timestamps.length - 1]} (${tempStats.n} samples)`
         : `${tempStats.n} samples`;
 
-    // Plain-English headline
-    let html = `
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+    // Header (always visible) - verdict + score
+    const header = `
+        <div style="display:flex; align-items:center; gap:8px;">
             <span style="font-size:1.1rem;">${verdict.emoji}</span>
             <strong style="color:${verdict.color}; font-size:0.95rem;">${verdict.word} for drying</strong>
-            <span style="margin-left:auto; font-size:0.75rem; opacity:0.7;">Score ${score.overall}/100</span>
-        </div>
-        <div style="margin-bottom:8px;">${verdict.text}</div>
-        <div style="font-size:0.78rem; opacity:0.85; margin-bottom:6px;">
-            <strong>Period:</strong> ${periodLabel}
+            <span style="margin-left:auto; font-size:0.75rem; opacity:0.7; white-space:nowrap;">Score ${score.overall}/100</span>
         </div>
     `;
 
@@ -518,16 +517,17 @@ function generateGraphSummary(timestamps, data) {
         : solarStats.mean > 300 ? "decent sun"
         : solarStats.mean > 100 ? "weak sun" : "little to no sun (likely night/cloud)";
 
-    html += `
-        <div style="font-size:0.78rem; line-height:1.6; opacity:0.9;">
+    // Body (revealed when expanded) - explanation + details + technical breakdown
+    const body = `
+        <div style="margin: 8px 0 10px 0;">${verdict.text}</div>
+        <div style="font-size:0.76rem; opacity:0.8; margin-bottom:8px;">
+            <strong>Period:</strong> ${periodLabel}
+        </div>
+        <div style="font-size:0.78rem; line-height:1.6;">
             🌡️ Temperature is <strong>${tempPhrase}</strong> (${tempStats.mean.toFixed(1)}°C avg, ${_trendWord(tempStats.trendTotal, '°C', 1.5)}).<br>
             💧 Humidity is <strong>${humPhrase}</strong> (${humStats.mean.toFixed(1)}% avg, ${_trendWord(humStats.trendTotal, '%', 3)}).<br>
             ☀️ Solar input is <strong>${solarPhrase}</strong> (${solarStats.mean.toFixed(0)} W/m² avg).
         </div>
-    `;
-
-    // Technical breakdown (collapsible look)
-    html += `
         <div style="margin-top:10px; padding-top:8px; border-top:1px dashed rgba(148,163,184,0.25); font-size:0.72rem; opacity:0.85;">
             <div style="font-weight:600; margin-bottom:4px;">📐 Technical breakdown</div>
             <div>Temp — min ${tempStats.min.toFixed(1)} / max ${tempStats.max.toFixed(1)} / σ ${tempStats.std.toFixed(2)} °C</div>
@@ -537,15 +537,21 @@ function generateGraphSummary(timestamps, data) {
         </div>
     `;
 
-    return html;
+    return { header, body };
 }
 
 function updateGraphSummary(timestamps, data) {
-    const summaryEl = document.getElementById('weatherSummaryText');
-    const paramSummaryEl = document.getElementById('parameterSummaryText');
-    const html = generateGraphSummary(timestamps, data);
-    if (summaryEl) summaryEl.innerHTML = html;
-    if (paramSummaryEl) paramSummaryEl.innerHTML = html;
+    const headerEl = document.getElementById('weatherSummaryHeader');
+    const bodyEl = document.getElementById('weatherSummaryBody');
+    const legacyEl = document.getElementById('weatherSummaryText');     // backwards compat
+    const paramEl = document.getElementById('parameterSummaryText');    // backwards compat
+
+    const { header, body } = generateGraphSummary(timestamps, data);
+
+    if (headerEl) headerEl.innerHTML = header;
+    if (bodyEl) bodyEl.innerHTML = body;
+    if (legacyEl) legacyEl.innerHTML = header + body;
+    if (paramEl) paramEl.innerHTML = header + body;
 }
 
 // Backwards-compatible no-op so older call sites don't error
