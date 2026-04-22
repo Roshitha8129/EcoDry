@@ -237,14 +237,31 @@ def make_prediction(hours, base_dt: datetime, metric=None):
 # =========================
 # LOAD DATA
 # =========================
-DATA_PATH = os.path.join(BASE_DIR, 'data', 'drying_forecast_data.csv')
+DATA_PATH = os.path.join(BASE_DIR, 'updated_sensor_data.csv')
 
 try:
     df = pd.read_csv(DATA_PATH)
     df.columns = [c.strip() for c in df.columns]
 
+    # Normalise the sensor schema (Date and Time, Temperature, RH, Solar Radiation)
+    if 'Date and Time' in df.columns:
+        df['DateTime'] = pd.to_datetime(
+            df['Date and Time'], format='%d-%m-%Y %H:%M', errors='coerce'
+        )
+        df = df.dropna(subset=['DateTime']).reset_index(drop=True)
+        df['Timestamp'] = df['DateTime'].dt.strftime('%H:%M')
+
+    if 'RH' in df.columns and 'Humidity' not in df.columns:
+        df['Humidity'] = pd.to_numeric(df['RH'], errors='coerce').fillna(0)
+    if 'Solar Radiation' in df.columns and 'Solar' not in df.columns:
+        df['Solar'] = pd.to_numeric(df['Solar Radiation'], errors='coerce').fillna(0)
+    if 'Rainfall' not in df.columns:
+        df['Rainfall'] = 0.0
+    if 'Wind' not in df.columns:
+        df['Wind'] = 0.0
+
     if 'Timestamp' not in df.columns:
-        raise ValueError("CSV missing 'Timestamp' column")
+        raise ValueError("CSV missing 'Timestamp'/'Date and Time' column")
 
 except Exception as e:
     print(f"Error loading data: {e}")
@@ -450,29 +467,8 @@ def get_dashboard_data_range(start_date_str, end_date_str, interval=60):
         print(f"\n🔄 Date range request: {start_date_str} to {end_date_str}", file=sys.stderr)
         sys.stderr.flush()
         
-        # Load April forecast data as strings for simple matching
-        april_forecast_path = os.path.join(BASE_DIR, 'data', 'april_forecast_2026.csv')
-        april_data_dict = {}  # Store as dict with datetime string as key
-        april_df = None
-        
-        if os.path.exists(april_forecast_path):
-            try:
-                april_df = pd.read_csv(april_forecast_path)
-                print(f"✅ Loaded April CSV: {len(april_df)} rows from {april_forecast_path}", file=sys.stderr)
-                
-                # Create a lookup dict with string keys for fast matching
-                for _, row in april_df.iterrows():
-                    dt_key = str(row['DateTime']).strip()  # "2026-04-20 00:00", etc
-                    april_data_dict[dt_key] = row
-                
-                print(f"✅ April data dict created with {len(april_data_dict)} entries", file=sys.stderr)
-                print(f"   Sample keys: {list(april_data_dict.keys())[:3]}", file=sys.stderr)
-                sys.stderr.flush()
-            except Exception as e:
-                print(f"❌ Error loading April data: {e}", file=sys.stderr)
-                import traceback
-                traceback.print_exc(file=sys.stderr)
-                sys.stderr.flush()
+        # April-forecast CSV has been removed; rely solely on the live sensor history.
+        april_data_dict = {}
 
         # Normalize interval - support all intervals (1, 5, 10, 60, etc)
         interval = int(interval)

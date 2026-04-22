@@ -34,11 +34,9 @@ app/
     └── __init__.py          # Helper utilities
 
 backend/
-├── weather_backend.py    # Legacy backend (kept for compatibility)
-├── data/
-│   ├── drying_forecast_data.csv
-│   └── april_forecast_2026.csv
-└── [model JSON files]    # XGBoost models
+├── weather_backend.py        # Legacy backend (kept for compatibility)
+├── updated_sensor_data.csv   # Single source of truth for sensor data
+└── [model JSON files]        # XGBoost models
 
 templates/               # HTML templates
 static/
@@ -412,7 +410,7 @@ python -c "import flask; print(flask.__version__)"
 ```
 
 ### Data Not Loading
-1. Check `backend/data/` folder exists
+1. Check `backend/updated_sensor_data.csv` exists
 2. Verify CSV files are present
 3. Check file paths in `DataService`
 4. Review console for error messages
@@ -497,9 +495,8 @@ For issues or questions:
 ```
 
 ### Data Files Missing
-Ensure the `backend/data/` directory contains the required CSV files:
-- `drying_forecast_data.csv`
-- `1_year_tagarapuvalsa_dataset_cleaned.csv`
+Ensure `backend/updated_sensor_data.csv` exists. Expected columns:
+`S.No., Date and Time, Temperature, RH, Solar Radiation`
 
 ## Project Directory Structure
 ```
