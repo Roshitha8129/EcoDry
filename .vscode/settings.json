@@ -1,0 +1,7 @@
+{
+    "python.analysis.extraPaths": [
+        "./updated_inte_pro/updated_inte_pro/inte/inte/backend",
+        "./updated_inte_pro/updated_inte_pro/inte/inte"
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system"
+}

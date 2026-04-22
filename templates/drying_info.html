@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoDry - Drying Time Predictor</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/responsive-dashboard.css">
+    <style>
+        .prediction-form-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .form-section {
+            background: var(--glass-white);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(16px);
+        }
+
+        .form-section h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-main);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group select {
+            display: none;
+        }
+
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .select-button {
+            background: #0066cc !important;
+            color: white !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 15px !important;
+            border-radius: 10px !important;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: inherit;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .select-button:hover {
+            background: #004a99 !important;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .select-button::after {
+            content: '▼';
+            font-size: 0.75rem;
+            color: white;
+        }
+
+        .select-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #0066cc !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: -1px;
+        }
+
+        .select-dropdown.open {
+            display: block;
+        }
+
+        .select-option {
+            padding: 12px 15px;
+            color: white !important;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .select-option:hover {
+            background: #004a99 !important;
+        }
+
+        .select-option.selected {
+            background: #004a99 !important;
+            font-weight: 600;
+        }
+
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .range-container input[type="range"] {
+            flex: 1;
+            cursor: pointer;
+            width: auto;
+            padding: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .range-value {
+            background: var(--primary-green);
+            color: #020617;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .result-container {
+            display: none;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(168, 85, 247, 0.1));
+            border: 2px solid var(--primary-green);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-header i {
+            font-size: 2rem;
+            color: var(--primary-green);
+        }
+
+        .result-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .drying-time {
+            background: rgba(56, 189, 248, 0.2);
+            border: 2px solid var(--primary-green);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .drying-time-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            margin: 10px 0;
+        }
+
+        .drying-time-label {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        .result-details {
+            text-align: left;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .result-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+        }
+
+        .result-detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-detail-label {
+            color: var(--text-muted);
+        }
+
+        .result-detail-value {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .prediction-form-container {
+                padding: 10px;
+                margin: 20px auto;
+            }
+
+            .form-section {
+                padding: 20px;
+            }
+
+            .drying-time-value {
+                font-size: 2.5rem;
+            }
+
+            .result-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-section {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .form-section h2 {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .drying-time-value {
+                font-size: 2rem;
+            }
+
+            .result-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-wrapper">
+        <!-- Navigation -->
+        <nav class="glass-nav">
+            <a href="/" class="logo">
+                <i class="fa-solid fa-cloud-sun"></i> EcoDry
+            </a>
+            <button class="hamburger-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/forecasting">Forecasting</a>
+                <a href="/drying-info" class="active">Drying Information</a>
+                <a href="/about">About</a>
+            </div>
+        </nav>
+
+        <!-- Drying Time Predictor -->
+        <div class="prediction-form-container">
+            <div class="form-section">
+                <h2><i class="fa-solid fa-hourglass-start"></i> Drying Time Predictor</h2>
+                <p style="color: var(--text-muted); margin-bottom: 25px;">Enter product details to get an estimated drying time</p>
+
+                <form id="dryingForm">
+                    <!-- Product Selection -->
+                    <div class="form-group">
+                        <label for="productSelect"><i class="fa-solid fa-leaf"></i> Select Product</label>
+                        <div class="custom-select" id="productCustomSelect">
+                            <button type="button" class="select-button" id="productButton">-- Choose a product --</button>
+                            <div class="select-dropdown" id="productDropdown"></div>
+                        </div>
+                        <select id="productSelect" required>
+                            <option value="">-- Choose a product --</option>
+                            <option value="carrot">🥕 Carrot</option>
+                        </select>
+                    </div>
+
+                    <!-- Thickness Slider -->
+                    <div class="form-group">
+                        <label for="thicknessSelect"><i class="fa-solid fa-arrows-alt-h"></i> Thickness</label>
+                        <div class="custom-select" id="thicknessCustomSelect">
+                            <button type="button" class="select-button" id="thicknessButton">-- Choose thickness --</button>
+                            <div class="select-dropdown" id="thicknessDropdown"></div>
+                        </div>
+                        <select id="thicknessSelect" required>
+                            <!-- Options generated by JS for 2.0 to 8.0 in steps of 0.2 -->
+                        </select>
+                        <small style="color: var(--text-muted); display: block; margin-top: 8px;">Options: 2.0 to 8.0 mm (step 0.2)</small>
+                    </div>
+
+                    <!-- Temperature Slider -->
+                    <div class="form-group">
+                        <label for="temperatureSlider"><i class="fa-solid fa-temperature-half"></i> Temperature</label>
+                        <div class="range-container">
+                            <input type="range" id="temperatureSlider" min="40" max="70" value="55" step="1">
+                            <span class="range-value" id="temperatureValue">55°C</span>
+                        </div>
+                        <small style="color: var(--text-muted); display: block; margin-top: 8px;">Range: 40-70°C</small>
+                    </div>
+
+                    <!-- Start Date and Time -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate"><i class="fa-solid fa-calendar"></i> Start Date</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="startTime"><i class="fa-solid fa-clock"></i> Start Time</label>
+                            <input type="time" id="startTime" required>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div class="error-message" id="errorMessage"></div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Predict Drying Time
+                    </button>
+                </form>
+            </div>
+
+            <!-- Result Container -->
+            <div class="result-container" id="resultContainer">
+                <div class="result-header">
+                    <i class="fa-solid fa-check-circle"></i>
+                </div>
+                <div class="result-title">Predicted Drying Time</div>
+
+                <div class="drying-time">
+                    <div class="drying-time-label">Estimated Duration</div>
+                    <div class="drying-time-value" id="dryingTimeValue">--</div>
+                </div>
+
+                <div class="result-details">
+                    <div class="result-detail-item">
+                        <span class="result-detail-label">Product:</span>
+                        <span class="result-detail-value" id="resultProduct">--</span>
+                    </div>
+                    <div class="result-detail-item">
+                        <span class="result-detail-label">Thickness:</span>
+                        <span class="result-detail-value" id="resultThickness">--</span>
+                    </div>
+                    <div class="result-detail-item">
+                        <span class="result-detail-label">Temperature:</span>
+                        <span class="result-detail-value" id="resultTemperature">--</span>
+                    </div>
+                    <div class="result-detail-item">
+                        <span class="result-detail-label">Start Date & Time:</span>
+                        <span class="result-detail-value" id="resultDateTime">--</span>
+                    </div>
+                    <div class="result-detail-item">
+                        <span class="result-detail-label">Expected Completion:</span>
+                        <span class="result-detail-value" id="resultCompletion">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Custom Select Dropdown Handler
+        function initCustomSelect(selectId, buttonId, dropdownId) {
+            const selectElement = document.getElementById(selectId);
+            const button = document.getElementById(buttonId);
+            const dropdown = document.getElementById(dropdownId);
+
+            // Populate dropdown options
+            function populateDropdown() {
+                dropdown.innerHTML = '';
+                Array.from(selectElement.options).forEach(option => {
+                    if (option.value) {
+                        const div = document.createElement('div');
+                        div.className = 'select-option';
+                        div.textContent = option.textContent;
+                        div.dataset.value = option.value;
+                        
+                        if (option.selected) {
+                            div.classList.add('selected');
+                        }
+
+                        div.addEventListener('click', function() {
+                            selectElement.value = option.value;
+                            button.textContent = option.textContent;
+                            dropdown.classList.remove('open');
+
+                            // Update selected state
+                            document.querySelectorAll(`#${dropdownId} .select-option`).forEach(opt => {
+                                opt.classList.remove('selected');
+                            });
+                            this.classList.add('selected');
+                        });
+
+                        dropdown.appendChild(div);
+                    }
+                });
+            }
+
+            populateDropdown();
+
+            // Toggle dropdown
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                dropdown.classList.toggle('open');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest(`#${selectId.replace('Select', 'CustomSelect')}`)) {
+                    dropdown.classList.remove('open');
+                }
+            });
+
+            // Expose populate for dynamic updates
+            selectElement.customPopulate = populateDropdown;
+        }
+
+        // Initialize custom selects
+        document.addEventListener('DOMContentLoaded', function() {
+            initCustomSelect('productSelect', 'productButton', 'productDropdown');
+            initCustomSelect('thicknessSelect', 'thicknessButton', 'thicknessDropdown');
+
+            // Populate thickness options dynamically
+            const thicknessSelect = document.getElementById('thicknessSelect');
+            for (let t = 2.0; t <= 8.0 + 1e-9; t += 0.2) {
+                const val = t.toFixed(1);
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = val + ' mm';
+                thicknessSelect.appendChild(opt);
+            }
+
+            // Repopulate custom dropdown
+            if (thicknessSelect.customPopulate) {
+                thicknessSelect.customPopulate();
+            }
+
+            // Set default thickness
+            thicknessSelect.value = '2.0';
+            document.getElementById('thicknessButton').textContent = '2.0 mm';
+        });
+
+        // Set today's date as minimum
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').value = today;
+            document.getElementById('startDate').min = today;
+
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('startTime').value = `${hours}:${minutes}`;
+        });
+
+        // Update temperature value display
+        document.getElementById('temperatureSlider').addEventListener('input', function() {
+            document.getElementById('temperatureValue').innerText = this.value + '°C';
+        });
+
+        // Form submission
+        document.getElementById('dryingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            predictDryingTime();
+        });
+
+        function predictDryingTime() {
+            const product = document.getElementById('productSelect').value;
+            const thickness = parseFloat(document.getElementById('thicknessSelect').value);
+            const temperature = parseInt(document.getElementById('temperatureSlider').value);
+            const startDate = document.getElementById('startDate').value;
+            const startTime = document.getElementById('startTime').value;
+            const errorEl = document.getElementById('errorMessage');
+
+            // Clear previous error
+            errorEl.classList.remove('active');
+
+            // Validation
+            if (!product) {
+                showError('Please select a product');
+                return;
+            }
+
+            if (!startDate || !startTime) {
+                showError('Please select start date and time');
+                return;
+            }
+
+            // Calculate drying time using Regression Equation
+            // DryingTime = 1239 + 55.3*Thick - 35.17*Temp + 5.23*Thick² + 0.3031*Temp² - 1.357*Thick*Temp
+            // Result is in minutes
+            const Thick = thickness;
+            const Temp = temperature;
+            
+            const dryingTimeMinutes = 1239 
+                + (55.3 * Thick) 
+                - (35.17 * Temp) 
+                + (5.23 * Thick * Thick) 
+                + (0.3031 * Temp * Temp) 
+                - (1.357 * Thick * Temp);
+
+            // Ensure positive value (shouldn't be negative with valid inputs)
+            const validDryingTime = Math.max(1, dryingTimeMinutes);
+            
+            // Convert minutes to hours
+            const baseTime = validDryingTime / 60;
+
+            // Display results
+            const startDateTime = new Date(`${startDate}T${startTime}`);
+            const endDateTime = new Date(startDateTime.getTime() + baseTime * 60 * 60 * 1000);
+
+            const hours = Math.floor(baseTime);
+            const minutes = Math.round((baseTime % 1) * 60);
+
+            const productNames = {
+                'carrot': '🥕 Carrot',
+                'chilli': '🌶️ Chilli',
+                'grain': '🌾 Grains',
+                'mango': '🥭 Mango',
+                'fish': '🐟 Fish',
+                'tomato': '🍅 Tomato',
+                'ginger': '🧅 Ginger',
+                'other': 'Other'
+            };
+
+            document.getElementById('dryingTimeValue').innerText = `${hours}h ${minutes}m`;
+            document.getElementById('resultProduct').innerText = productNames[product];
+            document.getElementById('resultThickness').innerText = thickness + ' mm';
+            document.getElementById('resultTemperature').innerText = temperature + '°C';
+            document.getElementById('resultDateTime').innerText = startDateTime.toLocaleString();
+            document.getElementById('resultCompletion').innerText = endDateTime.toLocaleString();
+
+            document.getElementById('resultContainer').classList.add('active');
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.innerText = message;
+            errorEl.classList.add('active');
+        }
+    </script>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 EcoDry. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

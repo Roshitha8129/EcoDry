@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - EcoDry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav class="glass-nav">
+        <a href="/" class="logo">
+            <i class="fa-solid fa-cloud-sun"></i> EcoDry
+        </a>
+        <button class="hamburger-btn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/settings" class="active">Settings</a>
+            <a href="/about">About</a>
+        </div>
+    </nav>
+
+    <div class="settings-container">
+        <h2><i class="fa-solid fa-sliders"></i> System Settings</h2>
+
+        <form id="settingsForm">
+            <div class="form-group">
+                <label>Notification Email</label>
+                <input type="email" class="form-control" placeholder="user@example.com" value="admin@ecodry.com">
+            </div>
+
+            <div class="form-group">
+                <label>Temperature Unit</label>
+                <select class="form-control">
+                    <option value="c">Celsius (°C)</option>
+                    <option value="f">Fahrenheit (°F)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    Enable Auto-Heater
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="toggle-switch">
+                    <input type="checkbox">
+                    Dark Mode Default
+                </label>
+            </div>
+
+            <button type="button" class="cta-button" onclick="alert('Settings Saved!')">Save Changes</button>
+        </form>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 EcoDry. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Food Drying Dashboard</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/css/dashboard.css?v=2">
+    <link rel="stylesheet" href="/static/css/responsive-dashboard.css">
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-gauges/gauge.min.js"></script>
+    <script src="/static/js/animations.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-wrapper">
+        <!-- Standard Navigation -->
+        <nav class="glass-nav">
+            <a href="/" class="logo">
+                <i class="fa-solid fa-cloud-sun"></i> EcoDry
+            </a>
+            <button class="hamburger-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/forecasting" class="active">Forecasting</a>
+                <a href="/drying-info">Drying Information</a>
+                <a href="/about">About</a>
+            </div>
+        </nav>
+
+        <div class="app-wrapper">
+            <!-- Dashboard Utility Toolbar (Moved from old Header) -->
+            <div class="dashboard-toolbar"
+                style="margin-top: 80px; display: flex; justify-content: flex-end; padding: 0 40px; gap: 15px; align-items: center;">
+                <button id="darkToggle" onclick="toggleDark()" class="theme-btn"
+                    style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 10px; border-radius: 50%; cursor: pointer;">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button id="chatBotIconToolbar" onclick="toggleChat()" class="theme-btn"
+                    style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 10px; border-radius: 50%; cursor: pointer; position: relative;">
+                    <i class="fa-solid fa-robot"></i>
+                    <span class="bot-notification-toolbar" style="position: absolute; top: 2px; right: 2px; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">1</span>
+                </button>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-grid">
+
+                    <!-- LEFT STACK (Chart + Predictions) -->
+                    <div class="left-stack">
+                        <main class="main-panel glass-panel">
+                            <div class="panel-header"
+                                style="flex-direction: column; align-items: flex-start; gap: 20px;">
+                                <div
+                                    style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                                    <button class="action-btn" onclick="resetDashboard()"
+                                        style="background: #ef4444; color: white;">
+                                        <i class="fa-solid fa-rotate-right"></i> Reset
+                                    </button>
+                                </div>
+
+                                <!-- New Filter Controls -->
+                                <div class="filters-container"
+                                    style="display: flex; gap: 20px; flex-wrap: wrap; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; width: 100%;">
+                                    <!-- Date Range -->
+                                    <div class="filter-group">
+                                        <label style="color: #94a3b8; font-size: 0.8rem;">From Date</label>
+                                        <input type="date" id="fromDate" class="input-field"
+                                            onchange="updateDateRange()">
+                                    </div>
+                                    <div class="filter-group">
+                                        <label style="color: #94a3b8; font-size: 0.8rem;">To Date</label>
+                                        <input type="date" id="toDate" class="input-field" onchange="updateDateRange()">
+                                    </div>
+
+                                    <!-- Parameters -->
+                                    <div class="filter-group" style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+                                        <label class="checkbox-btn active" onclick="toggleParam(this, 0)">Temperature</label>
+                                        <label class="checkbox-btn active" onclick="toggleParam(this, 1)">Humidity</label>
+                                        <label class="checkbox-btn active disabled-param" onclick="toggleDisabledParam(event)" style="text-decoration: line-through; opacity: 0.7; cursor: not-allowed; background: rgba(100, 100, 100, 0.3); color: #9ca3af;">Rainfall</label>
+                                        <label class="checkbox-btn active disabled-param" onclick="toggleDisabledParam(event)" style="text-decoration: line-through; opacity: 0.7; cursor: not-allowed; background: rgba(100, 100, 100, 0.3); color: #9ca3af;">Wind Speed</label>
+                                        <label class="checkbox-btn active" onclick="toggleParam(this, 4)">Solar Radiation</label>
+                                        <label class="checkbox-btn active disabled-param" onclick="toggleDisabledParam(event)" style="text-decoration: line-through; opacity: 0.7; cursor: not-allowed; background: rgba(100, 100, 100, 0.3); color: #9ca3af;">Wind Direction</label>
+                                    </div>
+                                </div>
+
+                                <div class="controls"
+                                    style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 5px;">
+                                    <button type="button" class="time-btn" data-interval="1">1m</button>
+                                    <button type="button" class="time-btn" data-interval="5">5m</button>
+                                    <button type="button" class="time-btn" data-interval="10">10m</button>
+                                    <button type="button" class="time-btn" data-interval="30">30m</button>
+                                    <button type="button" class="time-btn" data-interval="45">45m</button>
+                                    <button type="button" class="time-btn active" data-interval="60">1h</button>
+                                    <button type="button" class="time-btn" data-interval="1440">24h</button>
+                                </div>
+
+
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="weatherChart"></canvas>
+                            </div>
+                        </main>
+
+                        <!-- REMOVED AI/ENERGY PANELS -->
+                    </div>
+
+                    <!-- RIGHT PANEL: LIVE READING -->
+                    <aside class="live-panel glass-panel">
+                        <div class="panel-header">
+                            <h2><i class="fa-solid fa-tower-broadcast"></i> Live Sensors</h2>
+                            <span class="live-indicator">LIVE</span>
+                        </div>
+
+                        <!-- Forecasting Description (Dynamic Summary) -->
+                        <div style="padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px;">
+                            <p id="weatherSummaryText" style="margin: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; border-left: 3px solid var(--primary); padding-left: 10px;">Analyzing forecast conditions...</p>
+                        </div>
+
+
+
+                        <div class="gauges-grid">
+                            <!-- ACTIVE GAUGES (Top Row) -->
+                            <div class="gauge-card">
+                                <div class="gauge-header">
+                                    <i class="fa-solid fa-temperature-half"></i> Temperature
+                                </div>
+                                <canvas id="tempGauge"></canvas>
+                                <h3 id="temperature">--</h3>
+                                <span class="unit">°C</span>
+                            </div>
+
+                            <div class="gauge-card">
+                                <div class="gauge-header">
+                                    <i class="fa-solid fa-droplet"></i> Humidity
+                                </div>
+                                <canvas id="humidityGauge"></canvas>
+                                <h3 id="humidity">--</h3>
+                                <span class="unit">%</span>
+                            </div>
+
+                            <div class="gauge-card">
+                                <div class="gauge-header">
+                                    <i class="fa-regular fa-sun"></i> Solar Radiation
+                                </div>
+                                <canvas id="solarGauge"></canvas>
+                                <h3 id="solar_radiation">--</h3>
+                                <span class="unit">W/m²</span>
+                            </div>
+
+                            <!-- INACTIVE GAUGES (Bottom Row) -->
+                            <div class="gauge-card disabled-gauge">
+                                <div class="gauge-header disabled-param" style="opacity: 0.7;">
+                                    <i class="fa-solid fa-wind"></i> Wind Speed
+                                </div>
+                                <canvas id="windGauge" style="opacity: 0.5;"></canvas>
+                                <h3 id="wind_speed" style="opacity: 0.5;">--</h3>
+                                <span class="unit" style="opacity: 0.5;">m/s</span>
+                            </div>
+
+                            <div class="gauge-card disabled-gauge">
+                                <div class="gauge-header disabled-param" style="opacity: 0.7;">
+                                    <i class="fa-solid fa-cloud-showers-heavy"></i> Rainfall
+                                </div>
+                                <canvas id="rainGauge" style="opacity: 0.5;"></canvas>
+                                <h3 id="rainfall" style="opacity: 0.5;">--</h3>
+                                <span class="unit" style="opacity: 0.5;">mm</span>
+                            </div>
+
+                            <div class="gauge-card disabled-gauge">
+                                <div class="gauge-header disabled-param" style="opacity: 0.7;">
+                                    <i class="fa-regular fa-compass"></i> Wind Direction
+                                </div>
+                                <!-- Simple Text Display for Direction -->
+                                <div
+                                    style="height: 140px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; color: var(--text-main); opacity: 0.5;">
+                                    <span id="wind_direction">--</span>
+                                </div>
+                                <span class="unit" style="opacity: 0.5;">Deg</span>
+                            </div>
+                        </div>
+
+                        <div class="last-updated">
+                            <i class="fa-regular fa-clock"></i> <span id="time">Waiting for data...</span>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+
+            <!-- CHATBOT WINDOW -->
+            <div id="dryBotWindow" class="drybot-window">
+                <div class="drybot-header">
+                    <div class="drybot-title">
+                        <i class="fa-solid fa-robot"></i> DryBot
+                    </div>
+                    <button class="drybot-close" onclick="toggleChat()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="chatMessages" class="drybot-messages">
+                    <div class="msg bot">
+                        <strong>Welcome to DryBot!</strong> 👋<br><br>
+                        I'm your intelligent drying forecast assistant. I can help you understand forecasted conditions and answer questions about:<br><br>
+                        • Predicted drying conditions<br>
+                        • Forecasted temperature, humidity, and solar radiation<br>
+                        • Expected drying time based on predictions<br>
+                        • Optimization recommendations for planned drying<br>
+                        • Forecast alerts and warnings<br><br>
+                        <em>Ask me about the forecast!</em>
+                    </div>
+                </div>
+                <div class="drybot-input-area">
+                    <input type="text" id="userMsg" class="drybot-input" placeholder="Ask about forecast conditions..." onkeypress="handleChat(event)" />
+                    <button class="drybot-send" onclick="sendChat()">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+            <footer class="site-footer">
+                <p>&copy; 2026 EcoDry. All rights reserved.</p>
+            </footer>
+
+            <script src="/static/js/dashboard.js"></script>
+</body>
+
+</html>

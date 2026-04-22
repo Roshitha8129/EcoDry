@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoDry - Weather Intelligence</title>
+    <!-- Trandy Font: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+</head>
+
+<body>
+
+    <!-- Sky Background with Clouds -->
+    <!-- Sky Background with Clouds -->
+    <div class="sky-container">
+        <div class="sun"></div>
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+    </div>
+
+    <!-- Glass Navigation (Floating Pill) -->
+    <nav class="glass-nav">
+        <a href="/" class="logo">
+            <i class="fa-solid fa-cloud-sun"></i> EcoDry
+        </a>
+        <button class="hamburger-btn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-links">
+            <a href="/" class="active">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/forecasting">Forecasting</a>
+            <a href="/drying-info">Drying Information</a>
+            <a href="/about">About</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="weather-badge">
+            <span class="live-dot"></span> <i class="fa-solid fa-location-arrow"></i> Local Sensor Network Active
+        </div>
+        <h1>Harvest Science <br> Meets Mother Nature</h1>
+        <p>A beautiful, intelligent system that synchronizes your food drying process with the rhythm of the weather.
+            Smart. Sustainable. Simple.</p>
+
+        <a href="/dashboard" class="hero-btn">
+            View Live Weather <i class="fa-solid fa-arrow-right-long"></i>
+        </a>
+
+        <!-- System Status HUD (Add-on) -->
+        <div class="system-hud">
+            <div class="hud-item">
+                <span class="hud-label">System</span>
+                <span class="hud-value status-ok">Optimal</span>
+            </div>
+            <div class="hud-divider"></div>
+            <div class="hud-item">
+                <span class="hud-label">Sensors</span>
+                <span class="hud-value">12 Active</span>
+            </div>
+            <div class="hud-divider"></div>
+            <div class="hud-item">
+                <span class="hud-label">AI Logic</span>
+                <span class="hud-value">Running</span>
+            </div>
+        </div>
+
+        <!-- Trending Scroll Indicator -->
+        <div class="scroll-indicator" style="margin-top: 40px; opacity: 0.6; animation: bounce 2s infinite;">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <!-- Drying Monitoring Feature Cards -->
+    <section class="feature-grid">
+        <!-- Real-Time Drying Monitoring Card -->
+        <div class="weather-card">
+            <div class="card-icon" style="color: #fbbf24;">
+                <i class="fa-solid fa-sun center-icon"></i>
+            </div>
+            <h3>Real-Time Drying Monitoring</h3>
+            <p>Track solar radiation, temperature, and humidity in real-time. Our integrated sensors provide continuous monitoring of all critical environmental parameters for optimal drying conditions.</p>
+        </div>
+
+        <!-- Drying Condition Analysis Card -->
+        <div class="weather-card">
+            <div class="card-icon" style="color: #10b981;">
+                <i class="fa-solid fa-leaf"></i>
+            </div>
+            <h3>Drying Condition Analysis</h3>
+            <p>Our AI analyzes current conditions and classifies them as favorable, moderate, or poor for drying. Receive smart recommendations to maximize yield and prevent spoilage.</p>
+        </div>
+
+        <!-- Drying Time Prediction Card -->
+        <div class="weather-card">
+            <div class="card-icon" style="color: #8b5cf6;">
+                <i class="fa-solid fa-hourglass-end"></i>
+            </div>
+            <h3>Drying Time Prediction</h3>
+            <p>Input your produce type and current conditions to get an accurate estimated drying time. Our machine learning models adapt based on local weather patterns and historical data.</p>
+        </div>
+
+        <!-- Forecasting Insights Card -->
+        <div class="weather-card">
+            <div class="card-icon" style="color: #3b82f6;">
+                <i class="fa-solid fa-cloud-sun"></i>
+            </div>
+            <h3>Forecasting Insights</h3>
+            <p>Plan ahead with detailed forecasts of future environmental conditions. Know when to harvest, when to dry, and when potentially harmful weather is approaching.</p>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 EcoDry. All rights reserved.</p>
+    </footer>
+
+    <script src="/static/js/animations.js"></script>
+    <style>
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</body>
+
+</html>

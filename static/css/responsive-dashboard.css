@@ -1,0 +1,802 @@
+/* ============================================
+   DASHBOARD MOBILE-FIRST RESPONSIVE DESIGN
+   ============================================
+   
+   Breakpoints:
+   - 320px–480px   → Mobile (base styles)
+   - 481px–768px   → Mobile landscape / small tablets
+   - 769px–1024px  → Tablets / small laptops
+   - 1025px–1200px → Desktops
+   - 1201px+       → Large screens
+============================================ */
+
+/* ============================================
+   BASE MOBILE FIRST STYLES (320px - 480px)
+   ============================================ */
+
+.dashboard-container {
+    padding: 0.75rem !important;
+    gap: 0.75rem !important;
+    flex-direction: column;
+}
+
+.dashboard-toolbar {
+    padding: 0 0.75rem !important;
+    gap: 0.75rem !important;
+    margin-top: 60px !important;
+}
+
+.dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+    width: 100%;
+}
+
+.left-stack {
+    gap: 0.75rem !important;
+    order: 1;
+}
+
+.live-panel {
+    min-width: auto !important;
+    order: 2;
+}
+
+.main-panel {
+    flex: none !important;
+}
+
+.panel-header {
+    flex-direction: column;
+    gap: 0.5rem !important;
+    align-items: flex-start !important;
+}
+
+.panel-header h2 {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.controls {
+    gap: 0.2rem !important;
+    padding: 0.3rem !important;
+}
+
+.time-btn {
+    padding: 0.35rem 0.5rem !important;
+    font-size: 0.7rem !important;
+}
+
+.chart-wrapper {
+    min-height: 200px;
+    position: relative;
+}
+
+.gauges-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+}
+
+.gauge-card {
+    padding: 0.8rem !important;
+    border-radius: 0.8rem !important;
+}
+
+.gauge-header {
+    font-size: 0.65rem !important;
+    gap: 0.25rem !important;
+    margin-bottom: 0.2rem !important;
+}
+
+.gauge-card h3 {
+    font-size: 1rem !important;
+    margin: 0.2rem 0 0 0 !important;
+}
+
+.unit {
+    font-size: 0.65rem !important;
+}
+
+.glass-panel {
+    padding: 1rem !important;
+    border-radius: 1rem !important;
+    gap: 0.75rem !important;
+}
+
+.live-indicator {
+    padding: 0.2rem 0.4rem !important;
+    font-size: 0.6rem !important;
+}
+
+.prediction-panel {
+    grid-column: 1 !important;
+    min-height: 120px;
+    padding: 1rem !important;
+}
+
+.prediction-content {
+    flex-direction: column;
+    gap: 0.75rem !important;
+}
+
+.prediction-text h3 {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.3rem !important;
+}
+
+.prediction-text p {
+    font-size: 0.75rem !important;
+    line-height: 1.3;
+}
+
+.ai-icon {
+    font-size: 1.5rem !important;
+    padding: 0.75rem !important;
+}
+
+/* ============================================
+   SMALL TABLET / MOBILE LANDSCAPE (481px - 768px)
+   ============================================ */
+
+@media (min-width: 481px) {
+    .dashboard-container {
+        padding: 1rem !important;
+        gap: 1rem !important;
+    }
+
+    .dashboard-toolbar {
+        padding: 0 1rem !important;
+        gap: 1rem !important;
+        margin-top: 70px !important;
+    }
+
+    .dashboard-grid {
+        gap: 1rem !important;
+    }
+
+    .left-stack {
+        gap: 1rem !important;
+    }
+
+    .panel-header h2 {
+        font-size: 1rem !important;
+    }
+
+    .controls {
+        gap: 0.25rem !important;
+        padding: 0.4rem !important;
+    }
+
+    .time-btn {
+        padding: 0.4rem 0.65rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .chart-wrapper {
+        min-height: 250px;
+    }
+
+    .gauges-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+
+    .gauge-card {
+        padding: 0.9rem !important;
+        border-radius: 0.9rem !important;
+    }
+
+    .gauge-header {
+        font-size: 0.7rem !important;
+        gap: 0.3rem !important;
+    }
+
+    .gauge-card h3 {
+        font-size: 1.1rem !important;
+    }
+
+    .unit {
+        font-size: 0.7rem !important;
+    }
+
+    .glass-panel {
+        padding: 1.2rem !important;
+        border-radius: 1.2rem !important;
+    }
+
+    .live-indicator {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.65rem !important;
+    }
+
+    .prediction-panel {
+        min-height: 140px;
+        padding: 1.2rem !important;
+    }
+
+    .prediction-content {
+        gap: 1rem !important;
+    }
+
+    .prediction-text h3 {
+        font-size: 1rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .prediction-text p {
+        font-size: 0.8rem !important;
+    }
+
+    .action-btn {
+        padding: 0.6rem 1rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* ============================================
+   TABLETS / SMALL LAPTOPS (769px - 1024px)
+   ============================================ */
+
+@media (min-width: 769px) {
+    .dashboard-container {
+        padding: 1.2rem !important;
+        gap: 1.2rem !important;
+    }
+
+    .dashboard-toolbar {
+        padding: 0 1.2rem !important;
+        margin-top: 80px !important;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 2fr 1fr !important;
+        gap: 1.2rem !important;
+    }
+
+    .left-stack {
+        gap: 1.2rem !important;
+        grid-column: 1;
+        grid-row: 1;
+        order: 0;
+    }
+
+    .live-panel {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        order: 0;
+        min-height: auto;
+    }
+
+    .panel-header h2 {
+        font-size: 1.1rem !important;
+    }
+
+    .controls {
+        gap: 0.3rem !important;
+    }
+
+    .time-btn {
+        padding: 0.45rem 0.75rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .chart-wrapper {
+        min-height: 300px;
+    }
+
+    .gauges-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.9rem !important;
+    }
+
+    .gauge-card {
+        padding: 1rem !important;
+        border-radius: 1rem !important;
+    }
+
+    .gauge-header {
+        font-size: 0.75rem !important;
+    }
+
+    .gauge-card h3 {
+        font-size: 1.2rem !important;
+    }
+
+    .unit {
+        font-size: 0.75rem !important;
+    }
+
+    .glass-panel {
+        padding: 1.5rem !important;
+        border-radius: 1.5rem !important;
+    }
+
+    .live-indicator {
+        padding: 0.3rem 0.6rem !important;
+        font-size: 0.7rem !important;
+    }
+
+    .prediction-panel {
+        grid-column: 1 / -1;
+        min-height: 150px;
+        padding: 1.5rem !important;
+    }
+
+    .prediction-content {
+        gap: 1.2rem !important;
+    }
+
+    .prediction-text h3 {
+        font-size: 1.1rem !important;
+    }
+
+    .prediction-text p {
+        font-size: 0.85rem !important;
+        line-height: 1.5;
+    }
+
+    .action-btn {
+        padding: 0.7rem 1.2rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .theme-btn {
+        padding: 0.8rem !important;
+    }
+}
+
+/* ============================================
+   DESKTOPS (1025px - 1200px)
+   ============================================ */
+
+@media (min-width: 1025px) {
+    .dashboard-container {
+        padding: 1.5rem !important;
+        gap: 1.5rem !important;
+        max-width: 1600px;
+    }
+
+    .dashboard-toolbar {
+        padding: 0 1.5rem !important;
+        margin-top: 90px !important;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 3fr 1.2fr !important;
+        gap: 1.5rem !important;
+    }
+
+    .left-stack {
+        gap: 1.5rem !important;
+    }
+
+    .panel-header h2 {
+        font-size: 1.2rem !important;
+    }
+
+    .controls {
+        gap: 0.4rem !important;
+    }
+
+    .time-btn {
+        padding: 0.5rem 0.85rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    .chart-wrapper {
+        min-height: 350px;
+    }
+
+    .gauges-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+        gap: 1rem !important;
+    }
+
+    .gauge-card {
+        padding: 1.1rem !important;
+        border-radius: 1.1rem !important;
+    }
+
+    .gauge-header {
+        font-size: 0.8rem !important;
+    }
+
+    .gauge-card h3 {
+        font-size: 1.3rem !important;
+    }
+
+    .unit {
+        font-size: 0.8rem !important;
+    }
+
+    .glass-panel {
+        padding: 1.75rem !important;
+        border-radius: 1.5rem !important;
+    }
+
+    .live-panel {
+        min-width: 320px;
+    }
+
+    .live-indicator {
+        padding: 0.35rem 0.7rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .prediction-panel {
+        grid-column: 1 / -1;
+        min-height: 160px;
+        padding: 1.75rem !important;
+    }
+
+    .prediction-content {
+        gap: 1.5rem !important;
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .prediction-text h3 {
+        font-size: 1.2rem !important;
+    }
+
+    .prediction-text p {
+        font-size: 0.9rem !important;
+    }
+
+    .action-btn {
+        padding: 0.8rem 1.5rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    .theme-btn {
+        padding: 0.85rem !important;
+    }
+}
+
+/* ============================================
+   LARGE SCREENS (1201px+)
+   ============================================ */
+
+@media (min-width: 1201px) {
+    .dashboard-container {
+        padding: 2rem !important;
+        gap: 2rem !important;
+        max-width: 1800px;
+    }
+
+    .dashboard-toolbar {
+        padding: 0 2rem !important;
+        margin-top: 100px !important;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 3.5fr 1.2fr !important;
+        gap: 2rem !important;
+    }
+
+    .left-stack {
+        gap: 2rem !important;
+    }
+
+    .panel-header h2 {
+        font-size: 1.3rem !important;
+    }
+
+    .controls {
+        gap: 0.5rem !important;
+    }
+
+    .time-btn {
+        padding: 0.55rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .chart-wrapper {
+        min-height: 400px;
+    }
+
+    .gauges-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+        gap: 1.2rem !important;
+    }
+
+    .gauge-card {
+        padding: 1.25rem !important;
+        border-radius: 1.2rem !important;
+    }
+
+    .gauge-header {
+        font-size: 0.85rem !important;
+    }
+
+    .gauge-card h3 {
+        font-size: 1.4rem !important;
+    }
+
+    .unit {
+        font-size: 0.85rem !important;
+    }
+
+    .glass-panel {
+        padding: 2rem !important;
+        border-radius: 1.75rem !important;
+    }
+
+    .live-panel {
+        min-width: 360px;
+    }
+
+    .live-indicator {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .prediction-panel {
+        grid-column: 1 / -1;
+        min-height: 180px;
+        padding: 2rem !important;
+    }
+
+    .prediction-content {
+        gap: 2rem !important;
+        flex-direction: row;
+    }
+
+    .prediction-text h3 {
+        font-size: 1.3rem !important;
+    }
+
+    .prediction-text p {
+        font-size: 0.95rem !important;
+        line-height: 1.6;
+    }
+
+    .action-btn {
+        padding: 0.9rem 1.8rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .theme-btn {
+        padding: 0.9rem !important;
+    }
+
+    .ai-icon {
+        font-size: 2rem !important;
+        padding: 1rem !important;
+    }
+}
+
+/* ============================================
+   SPECIFIC MAX-WIDTH BREAKPOINTS
+   ============================================ */
+
+@media (max-width: 600px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .live-panel {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+    }
+
+    .gauges-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (min-width: 600px) {
+    .dashboard-grid {
+        grid-template-columns: 2fr 1fr !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 2fr 1fr !important;
+    }
+
+    .live-panel {
+        grid-column: 2 !important;
+        grid-row: 1 / -1 !important;
+    }
+
+    .gauges-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 3fr 1.2fr !important;
+    }
+
+    .gauges-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 3fr 1.2fr !important;
+        max-width: 1600px;
+    }
+
+    .gauges-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+    }
+}
+
+/* ============================================
+   CHART & GAUGE RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+canvas {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.gauge-card canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 120px;
+}
+
+/* ============================================
+   FILTERS & CONTROLS RESPONSIVE
+   ============================================ */
+
+.filters-container {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+    padding: 0.75rem !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 0.8rem !important;
+    width: 100% !important;
+}
+
+@media (min-width: 481px) {
+    .filters-container {
+        gap: 1rem !important;
+        padding: 1rem !important;
+        border-radius: 1rem !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .filters-container {
+        gap: 1.2rem !important;
+        padding: 1.2rem !important;
+        border-radius: 1.2rem !important;
+    }
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 0 1 auto;
+}
+
+/* Parameters Container - Ensure Horizontal Layout */
+.filter-group[style*="gap: 10px"] {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    width: 100% !important;
+}
+
+.filter-group[style*="gap: 10px"] label {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.75rem !important;
+    padding: 6px 12px !important;
+}
+
+.filter-group label {
+    font-size: 0.75rem !important;
+    color: #94a3b8;
+}
+
+.input-field {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.8rem !important;
+}
+
+@media (min-width: 769px) {
+    .input-field {
+        padding: 0.65rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+/* ============================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================ */
+
+@media (hover: none) and (pointer: coarse) {
+    .glass-panel,
+    .gauge-card,
+    .time-btn,
+    .action-btn {
+        transition: none;
+    }
+
+    .glass-panel:active,
+    .gauge-card:active {
+        transform: translateY(-3px);
+    }
+
+    button,
+    .action-btn,
+    .time-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* ============================================
+   ORIENTATION ADJUSTMENTS
+   ============================================ */
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .dashboard-container {
+        padding: 0.75rem !important;
+        gap: 0.75rem !important;
+    }
+
+    .dashboard-toolbar {
+        margin-top: 50px !important;
+        gap: 0.5rem !important;
+    }
+
+    .chart-wrapper {
+        min-height: 200px;
+    }
+
+    .gauges-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+    .dashboard-toolbar,
+    .theme-btn,
+    .action-btn,
+    .prediction-panel {
+        display: none !important;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .glass-panel {
+        page-break-inside: avoid;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY - REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
