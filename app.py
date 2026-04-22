@@ -14,8 +14,8 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    # Get port from environment or use default (7860 for Hugging Face)
-    port = int(os.environ.get("PORT", 7860))
+    # Get port from environment or use default (5000 for Replit)
+    port = int(os.environ.get("PORT", 5000))
     
     # Run app
     print(f"Starting EcoDry application on http://0.0.0.0:{port}")
