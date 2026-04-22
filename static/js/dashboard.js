@@ -240,7 +240,10 @@ function loadDashboard(interval) {
             });
 
             window.chart = chart;
-            
+
+            // Update graph-based drying summary using the data just plotted
+            updateGraphSummary(data.timestamps, data.data);
+
             // Apply legend styling immediately without delays
             const legendContainer = document.querySelector('.chartjs-legend');
             if (legendContainer) {
@@ -386,79 +389,167 @@ function loadLive() {
         });
 }
 
-/* --- Weather Summary Generation --- */
-function generateWeatherSummary(temp, humidity, solar) {
-    // Create detailed summary with condition assessment
-    let assessment = "📊 <strong>Environmental Assessment:</strong> ";
-    let condition = "";
-    
-    // Determine overall condition based on solar radiation
-    if (solar > 600) {
-        condition = "favorable";
-    } else if (solar >= 400 && solar <= 600) {
-        condition = "moderate";
-    } else {
-        condition = "poor";
+/* --- Graph-based Drying Suitability Analysis --- */
+function _stats(arr) {
+    const xs = (arr || []).map(Number).filter(v => !isNaN(v));
+    if (!xs.length) return null;
+    const sum = xs.reduce((a, b) => a + b, 0);
+    const mean = sum / xs.length;
+    const min = Math.min(...xs);
+    const max = Math.max(...xs);
+    const variance = xs.reduce((a, b) => a + (b - mean) ** 2, 0) / xs.length;
+    const std = Math.sqrt(variance);
+    // Linear trend slope (per-sample)
+    let slope = 0;
+    if (xs.length > 1) {
+        const n = xs.length;
+        const meanX = (n - 1) / 2;
+        let num = 0, den = 0;
+        for (let i = 0; i < n; i++) {
+            num += (i - meanX) * (xs[i] - mean);
+            den += (i - meanX) ** 2;
+        }
+        slope = den === 0 ? 0 : num / den;
     }
-    
-    assessment += "Conditions are " + condition + " for drying. ";
-    
-    // Add detailed parameters
-    assessment += "<br>🌡️ <strong>Temperature:</strong> " + temp + "°C (";
-    if (temp < 15) {
-        assessment += "too cold, drying will be slow";
-    } else if (temp < 25) {
-        assessment += "acceptable, but could be warmer";
-    } else if (temp < 35) {
-        assessment += "ideal for drying";
-    } else {
-        assessment += "high, monitor product quality";
-    }
-    assessment += ") ";
-    
-    assessment += "<br>💧 <strong>Humidity:</strong> " + humidity + "% (";
-    if (humidity < 40) {
-        assessment += "excellent for drying";
-    } else if (humidity < 60) {
-        assessment += "good drying conditions";
-    } else if (humidity < 75) {
-        assessment += "moderate, acceptable";
-    } else {
-        assessment += "high, increase ventilation";
-    }
-    assessment += ") ";
-    
-    assessment += "<br>☀️ <strong>Solar Radiation:</strong> " + solar + " W/m² (";
-    if (solar > 600) {
-        assessment += "excellent natural drying power";
-    } else if (solar > 400) {
-        assessment += "good solar input";
-    } else if (solar > 200) {
-        assessment += "moderate, supplement with heat";
-    } else {
-        assessment += "low, consider artificial drying";
-    }
-    assessment += ")";
-    
-    return assessment;
+    const trendTotal = slope * (xs.length - 1);
+    return { mean, min, max, std, slope, trendTotal, n: xs.length };
 }
 
-function updateWeatherSummary() {
+function _trendWord(total, unit, threshold) {
+    if (Math.abs(total) < threshold) return `stable (≈${total >= 0 ? '+' : ''}${total.toFixed(1)}${unit})`;
+    return total > 0
+        ? `rising (+${total.toFixed(1)}${unit} across the window)`
+        : `falling (${total.toFixed(1)}${unit} across the window)`;
+}
+
+function _scoreDrying(tempStats, humStats, solarStats) {
+    // Each sub-score 0..100
+    const t = tempStats?.mean ?? 0;
+    const h = humStats?.mean ?? 0;
+    const s = solarStats?.mean ?? 0;
+
+    // Temperature: optimal 28-38°C
+    let ts;
+    if (t < 15) ts = 10;
+    else if (t < 22) ts = 40;
+    else if (t < 28) ts = 70;
+    else if (t <= 38) ts = 100;
+    else if (t <= 42) ts = 75;
+    else ts = 50;
+
+    // Humidity: lower is better, optimal < 50%
+    let hs;
+    if (h < 40) hs = 100;
+    else if (h < 55) hs = 85;
+    else if (h < 70) hs = 60;
+    else if (h < 80) hs = 35;
+    else hs = 15;
+
+    // Solar: higher is better
+    let ss;
+    if (s > 600) ss = 100;
+    else if (s > 450) ss = 85;
+    else if (s > 300) ss = 65;
+    else if (s > 150) ss = 40;
+    else if (s > 50) ss = 20;
+    else ss = 5;
+
+    // Weighted: humidity is the biggest enemy of drying
+    const overall = Math.round(0.30 * ts + 0.45 * hs + 0.25 * ss);
+    return { overall, temp: ts, hum: hs, solar: ss };
+}
+
+function _verdict(score) {
+    if (score >= 80) return { word: "Excellent", emoji: "✅", color: "#10B981",
+        text: "Conditions across the selected period look great for drying. You can dry with confidence." };
+    if (score >= 65) return { word: "Good", emoji: "👍", color: "#22C55E",
+        text: "Conditions are favorable for drying. Expect normal drying times." };
+    if (score >= 45) return { word: "Moderate", emoji: "⚠️", color: "#F59E0B",
+        text: "Conditions are workable but not ideal. Drying will be slower; check the produce more often." };
+    if (score >= 25) return { word: "Poor", emoji: "🚫", color: "#F97316",
+        text: "Conditions are weak for natural drying. Consider supplemental heat or wait for a better window." };
+    return { word: "Unsuitable", emoji: "❌", color: "#EF4444",
+        text: "Conditions are unsuitable for natural drying right now. Use a controlled dryer or postpone." };
+}
+
+function generateGraphSummary(timestamps, data) {
+    const tempStats = _stats(data?.temperature);
+    const humStats = _stats(data?.humidity);
+    const solarStats = _stats(data?.solar);
+
+    if (!tempStats || !humStats || !solarStats) {
+        return "<em>Not enough data in the selected timeframe to analyze.</em>";
+    }
+
+    const score = _scoreDrying(tempStats, humStats, solarStats);
+    const verdict = _verdict(score.overall);
+
+    const periodLabel = timestamps && timestamps.length
+        ? `${timestamps[0]} → ${timestamps[timestamps.length - 1]} (${tempStats.n} samples)`
+        : `${tempStats.n} samples`;
+
+    // Plain-English headline
+    let html = `
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <span style="font-size:1.1rem;">${verdict.emoji}</span>
+            <strong style="color:${verdict.color}; font-size:0.95rem;">${verdict.word} for drying</strong>
+            <span style="margin-left:auto; font-size:0.75rem; opacity:0.7;">Score ${score.overall}/100</span>
+        </div>
+        <div style="margin-bottom:8px;">${verdict.text}</div>
+        <div style="font-size:0.78rem; opacity:0.85; margin-bottom:6px;">
+            <strong>Period:</strong> ${periodLabel}
+        </div>
+    `;
+
+    // Plain-English per-metric reading
+    const tempPhrase = tempStats.mean >= 28 && tempStats.mean <= 38
+        ? "in the sweet spot"
+        : tempStats.mean < 22 ? "on the cool side"
+        : tempStats.mean < 28 ? "a bit low"
+        : tempStats.mean > 42 ? "very hot — watch product quality" : "warm";
+
+    const humPhrase = humStats.mean < 40 ? "very dry — excellent"
+        : humStats.mean < 55 ? "comfortably dry"
+        : humStats.mean < 70 ? "a bit humid — slower drying"
+        : humStats.mean < 80 ? "humid — drying will struggle"
+        : "very humid — natural drying not recommended";
+
+    const solarPhrase = solarStats.mean > 600 ? "strong sun"
+        : solarStats.mean > 300 ? "decent sun"
+        : solarStats.mean > 100 ? "weak sun" : "little to no sun (likely night/cloud)";
+
+    html += `
+        <div style="font-size:0.78rem; line-height:1.6; opacity:0.9;">
+            🌡️ Temperature is <strong>${tempPhrase}</strong> (${tempStats.mean.toFixed(1)}°C avg, ${_trendWord(tempStats.trendTotal, '°C', 1.5)}).<br>
+            💧 Humidity is <strong>${humPhrase}</strong> (${humStats.mean.toFixed(1)}% avg, ${_trendWord(humStats.trendTotal, '%', 3)}).<br>
+            ☀️ Solar input is <strong>${solarPhrase}</strong> (${solarStats.mean.toFixed(0)} W/m² avg).
+        </div>
+    `;
+
+    // Technical breakdown (collapsible look)
+    html += `
+        <div style="margin-top:10px; padding-top:8px; border-top:1px dashed rgba(148,163,184,0.25); font-size:0.72rem; opacity:0.85;">
+            <div style="font-weight:600; margin-bottom:4px;">📐 Technical breakdown</div>
+            <div>Temp — min ${tempStats.min.toFixed(1)} / max ${tempStats.max.toFixed(1)} / σ ${tempStats.std.toFixed(2)} °C</div>
+            <div>Humidity — min ${humStats.min.toFixed(1)} / max ${humStats.max.toFixed(1)} / σ ${humStats.std.toFixed(2)} %</div>
+            <div>Solar — min ${solarStats.min.toFixed(0)} / max ${solarStats.max.toFixed(0)} / σ ${solarStats.std.toFixed(1)} W/m²</div>
+            <div style="margin-top:4px;">Sub-scores → T:${score.temp} H:${score.hum} S:${score.solar} (weighted 30/45/25)</div>
+        </div>
+    `;
+
+    return html;
+}
+
+function updateGraphSummary(timestamps, data) {
     const summaryEl = document.getElementById('weatherSummaryText');
     const paramSummaryEl = document.getElementById('parameterSummaryText');
-    
-    const temp = parseFloat(document.getElementById('temperature')?.innerText) || 0;
-    const humidity = parseFloat(document.getElementById('humidity')?.innerText) || 0;
-    const solar = parseFloat(document.getElementById('solar_radiation')?.innerText) || 0;
-    
-    if (temp && humidity && solar) {
-        const summary = generateWeatherSummary(temp, humidity, solar);
-        
-        // Update both summary elements
-        if (summaryEl) summaryEl.innerHTML = summary;
-        if (paramSummaryEl) paramSummaryEl.innerHTML = summary;
-    }
+    const html = generateGraphSummary(timestamps, data);
+    if (summaryEl) summaryEl.innerHTML = html;
+    if (paramSummaryEl) paramSummaryEl.innerHTML = html;
 }
+
+// Backwards-compatible no-op so older call sites don't error
+function updateWeatherSummary() { /* superseded by updateGraphSummary */ }
 
 /* --- Date Validation --- */
 function setupDateValidation() {
@@ -576,7 +667,6 @@ function handleTimeButtonClick(e) {
 }
 
 setInterval(loadLive, 3000);
-setInterval(updateWeatherSummary, 5000);
 loadDashboard(60);
 loadLive();
 
@@ -726,9 +816,16 @@ function getBotResponse(input) {
     
     // ========== WEATHER/CONDITIONS ASSESSMENT ==========
     if (input.includes('weather') || input.includes('condition') || input.includes('suitable') || input.includes('environment') || input.includes('assessment')) {
-        const summary = generateWeatherSummary(temp, humidity, solar);
-        return "🌤️ <strong>Overall Environmental Assessment:</strong><br>" + summary + 
-               "<br><br>📊 Key Metrics: Temp=" + temp + "°C | Humidity=" + humidity + "% | Solar=" + solar + " W/m²";
+        // Build a single-point summary from current live readings using the same scoring engine
+        const tStats = { mean: temp, min: temp, max: temp, std: 0, slope: 0, trendTotal: 0, n: 1 };
+        const hStats = { mean: humidity, min: humidity, max: humidity, std: 0, slope: 0, trendTotal: 0, n: 1 };
+        const sStats = { mean: solar, min: solar, max: solar, std: 0, slope: 0, trendTotal: 0, n: 1 };
+        const score = _scoreDrying(tStats, hStats, sStats);
+        const verdict = _verdict(score.overall);
+        return `🌤️ <strong>Overall Environmental Assessment:</strong><br>` +
+               `${verdict.emoji} <strong>${verdict.word} for drying</strong> (score ${score.overall}/100)<br>` +
+               `${verdict.text}<br><br>` +
+               `📊 Key Metrics: Temp=${temp}°C | Humidity=${humidity}% | Solar=${solar} W/m²`;
     }
     
     // ========== DRYING TIMELINE/DURATION ==========
