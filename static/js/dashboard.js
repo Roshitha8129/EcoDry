@@ -234,7 +234,7 @@ function loadDashboard(interval) {
                     elements: { point: { radius: 0, hitRadius: 10 } },
                     scales: {
                         x: { grid: { display: false }, ticks: { color: '#64748B' } },
-                        y: { border: { display: false }, grid: { borderDash: [4, 4], color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748B' } }
+                        y: { border: { display: false }, grid: { borderDash: [4, 4], color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748B', stepSize: 100 } }
                     }
                 }
             });
