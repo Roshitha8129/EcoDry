@@ -94,7 +94,9 @@ class DataService:
     def get_live_readings(cls):
         """Get current live sensor readings."""
         df = cls._load_main_data()
-        now_str = cls.get_current_time_str()
+        now = datetime.now()
+        now_str = now.strftime("%H:%M")
+        hour = now.hour
 
         if df.empty:
             return {
@@ -112,12 +114,26 @@ class DataService:
         matches = df[df['Timestamp'] == now_str]
         row = matches.iloc[-1] if not matches.empty else df.iloc[-1]
 
+        # Resolve solar separately so daytime never reports a flat 0 just
+        # because the most recent recorded row happens to be pre-dawn.
+        solar_val = float(row.get("Solar", 0))
+        if 6 <= hour <= 18 and solar_val == 0:
+            # 1) Try the most recent matching HH:MM row that is non-zero.
+            non_zero_match = matches[matches['Solar'] > 0] if not matches.empty else matches
+            if not non_zero_match.empty:
+                solar_val = float(non_zero_match.iloc[-1]['Solar'])
+            else:
+                # 2) Fall back to a recent sample from the same hour-of-day.
+                same_hour = df[(df['DateTime'].dt.hour == hour) & (df['Solar'] > 0)]
+                if not same_hour.empty:
+                    solar_val = float(same_hour.iloc[-1]['Solar'])
+
         return {
             "temperature": round(float(row.get("Temperature", 0)), 2),
             "humidity": round(float(row.get("Humidity", 0)), 2),
             "rainfall": round(float(row.get("Rainfall", 0)), 2),
             "wind_speed": round(float(row.get("Wind", 0)), 2),
-            "solar_radiation": round(float(row.get("Solar", 0)), 2),
+            "solar_radiation": round(solar_val, 2),
             "wind_direction": int(np.random.randint(0, 360)),
             "time": now_str,
         }

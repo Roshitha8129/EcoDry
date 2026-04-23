@@ -281,9 +281,20 @@ body {
 }
 
 .chart-wrapper {
-    flex: 1;
+    flex: 1 1 auto;
     position: relative;
     width: 100%;
+    /* Explicit responsive height so Chart.js (maintainAspectRatio:false) has
+       a stable container regardless of how tall the filter/controls area
+       grows when the viewport shrinks or interval buttons are toggled. */
+    height: clamp(280px, 45vh, 460px);
+    min-height: 280px;
+}
+
+.chart-wrapper > canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
 }
 
 /* Legend styling for disabled parameters */

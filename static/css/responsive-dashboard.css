@@ -68,7 +68,8 @@
 }
 
 .chart-wrapper {
-    min-height: 200px;
+    height: 280px;
+    min-height: 280px;
     position: relative;
 }
 
@@ -173,7 +174,8 @@
     }
 
     .chart-wrapper {
-        min-height: 250px;
+        height: 320px;
+        min-height: 320px;
     }
 
     .gauges-grid {
@@ -281,7 +283,8 @@
     }
 
     .chart-wrapper {
-        min-height: 300px;
+        height: 380px;
+        min-height: 380px;
     }
 
     .gauges-grid {
@@ -384,7 +387,8 @@
     }
 
     .chart-wrapper {
-        min-height: 350px;
+        height: 420px;
+        min-height: 420px;
     }
 
     .gauges-grid {
@@ -492,7 +496,8 @@
     }
 
     .chart-wrapper {
-        min-height: 400px;
+        height: 480px;
+        min-height: 480px;
     }
 
     .gauges-grid {
