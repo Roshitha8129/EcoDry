@@ -16,8 +16,21 @@ Mapping used internally:
 import os
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from app.utils import validate_interval
+
+
+# The sensor is deployed in India (CSV uses DD-MM-YYYY format and the
+# agricultural drying site is in IST). The server may run in UTC (e.g. on
+# Replit), so we must convert "now" to the sensor's local time before doing
+# any time-of-day comparisons; otherwise daytime metrics like solar radiation
+# get matched against the wrong row and report 0 during local morning hours.
+SENSOR_TZ = timezone(timedelta(hours=5, minutes=30))
+
+
+def _sensor_now():
+    """Return the current time in the sensor's local timezone (IST)."""
+    return datetime.now(timezone.utc).astimezone(SENSOR_TZ).replace(tzinfo=None)
 
 
 BACKEND_DIR = os.path.join(
@@ -87,14 +100,14 @@ class DataService:
 
     @staticmethod
     def get_current_time_str():
-        """Get current time as HH:MM string."""
-        return datetime.now().strftime("%H:%M")
+        """Get current time as HH:MM string in the sensor's local timezone."""
+        return _sensor_now().strftime("%H:%M")
 
     @classmethod
     def get_live_readings(cls):
         """Get current live sensor readings."""
         df = cls._load_main_data()
-        now = datetime.now()
+        now = _sensor_now()
         now_str = now.strftime("%H:%M")
         hour = now.hour
 
