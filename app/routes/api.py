@@ -130,15 +130,3 @@ def get_summary():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-
-@api_bp.route('/chatbot', methods=['POST'])
-def chatbot():
-    """Chatbot interface (placeholder).
-    
-    Returns:
-        JSON with chatbot response
-    """
-    return jsonify({
-        "response": "This is a mock chatbot interface. "
-                   "Backend is prioritizing predictions."
-    })

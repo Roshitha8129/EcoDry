@@ -146,8 +146,6 @@ body {
     border-color: rgba(56, 189, 248, 0.3);
 }
 
-
-
 /* --- Header --- */
 .header-content {
     display: flex;
@@ -1025,51 +1023,6 @@ body {
     font-size: 11px;
     font-weight: 700;
 }
-/* DryBot Chat Widget - Mobile Responsive */ */
-.drybot-container {
-    position: fixed;
-    bottom: clamp(1rem, 3vw, 1.875rem);
-    right: clamp(1rem, 3vw, 1.875rem);
-    z-index: 2000;
-}
-
-.drybot-toggle {
-    width: clamp(50px, 12vw, 60px);
-    height: clamp(50px, 12vw, 60px);
-    background: linear-gradient(135deg, var(--primary-green), var(--primary-dark));
-    border-radius: 50%;
-    box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(1.5rem, 4vw, 1.75rem);
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-}
-
-.drybot-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 15px 40px rgba(56, 189, 248, 0.6);
-}
-
-.bot-notification {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    background: #ef4444;
-    color: white;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    border: 2px solid #0f172a;
-}
 
 /* Chat Window */
 .chat-window {
@@ -1224,172 +1177,6 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
-/* ===========================
-   DryBot Chat Widget Styles
-   =========================== */
-.drybot-window {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: clamp(280px, 90vw, 420px);
-    height: clamp(400px, 80vh, 550px);
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
-    transform-origin: bottom right;
-    transform: scale(0);
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    pointer-events: none;
-    z-index: 2001;
-}
-
-.drybot-window.open {
-    transform: scale(1);
-    opacity: 1;
-    pointer-events: all;
-}
-
-.drybot-header {
-    padding: 16px 20px;
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(192, 132, 252, 0.05));
-    border-bottom: 1px solid rgba(56, 189, 248, 0.15);
-    border-radius: 16px 16px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-}
-
-.drybot-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-main);
-}
-
-.drybot-title i {
-    font-size: 18px;
-    color: var(--primary-green);
-    background: rgba(56, 189, 248, 0.2);
-    padding: 6px 8px;
-    border-radius: 8px;
-}
-
-.drybot-close {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-    padding: 4px 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.drybot-close:hover {
-    color: var(--primary-green);
-    transform: rotate(90deg);
-}
-
-.drybot-messages {
-    flex: 1;
-    padding: 16px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(56, 189, 248, 0.3) transparent;
-}
-
-.drybot-messages::-webkit-scrollbar {
-    width: 6px;
-}
-
-.drybot-messages::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.drybot-messages::-webkit-scrollbar-thumb {
-    background: rgba(56, 189, 248, 0.3);
-    border-radius: 3px;
-}
-
-.drybot-messages::-webkit-scrollbar-thumb:hover {
-    background: rgba(56, 189, 248, 0.6);
-}
-
-.drybot-input-area {
-    padding: 12px 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-shrink: 0;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 0 0 16px 16px;
-}
-
-.drybot-input {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    border-radius: 20px;
-    padding: 10px 16px;
-    color: var(--text-main);
-    font-family: inherit;
-    font-size: 13px;
-    outline: none;
-    transition: all 0.2s;
-}
-
-.drybot-input::placeholder {
-    color: var(--text-muted);
-}
-
-.drybot-input:focus {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(56, 189, 248, 0.4);
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
-}
-
-.drybot-send {
-    background: linear-gradient(135deg, var(--primary-green), var(--primary-dark));
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    transition: all 0.2s;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
-}
-
-.drybot-send:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(56, 189, 248, 0.5);
-}
-
-.drybot-send:active {
-    transform: scale(0.95);
-}
-
 /* Message Styling */
 .msg {
     display: flex;
@@ -1446,37 +1233,8 @@ body {
     font-size: 12px;
 }
 
-/* Dark Mode Adjustments */
-.dark .drybot-window {
-    background: rgba(15, 23, 42, 0.98);
-    border-color: rgba(56, 189, 248, 0.15);
-}
-
-.dark .drybot-header {
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(192, 132, 252, 0.03));
-    border-bottom-color: rgba(56, 189, 248, 0.12);
-}
-
-.dark .drybot-input {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(56, 189, 248, 0.15);
-    color: #e2e8f0;
-}
-
-.dark .drybot-input:focus {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(56, 189, 248, 0.35);
-}
-
 /* Responsive Design */
 @media (max-width: 640px) {
-    .drybot-window {
-        width: calc(100vw - 20px);
-        height: 70vh;
-        bottom: 10px;
-        right: 10px;
-    }
-    
     .msg.user,
     .msg.bot {
         max-width: 90%;
@@ -1539,7 +1297,6 @@ body {
     background: rgba(30, 41, 59, 0.4);
     backdrop-filter: blur(8px);
 }
-
 
 /* --- Floating Animation for Panels --- */
 @keyframes float {
@@ -1720,11 +1477,6 @@ body {
     .dashboard-grid {
         gap: 1rem;
     }
-
-    .drybot-container {
-        bottom: 1rem;
-        right: 1rem;
-    }
 }
 
 @media (max-width: 768px) {
@@ -1784,11 +1536,6 @@ body {
     .energy-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.75rem;
-    }
-
-    .drybot-container {
-        bottom: 0.75rem;
-        right: 0.75rem;
     }
 
     .chat-window {
@@ -1892,18 +1639,6 @@ body {
         font-size: 0.65rem;
     }
 
-    .drybot-toggle {
-        width: 45px;
-        height: 45px;
-        font-size: 1.25rem;
-    }
-
-    .bot-notification {
-        width: 16px;
-        height: 16px;
-        font-size: 9px;
-    }
-
     .chat-window {
         width: 90vw;
         height: 60vh;
@@ -1981,13 +1716,6 @@ body {
 
     .gauge-card h3 {
         font-size: 0.75rem;
-    }
-
-    .drybot-toggle {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem0px;
-        top: auto;
     }
 }
 /* ===== Drying Suitability Summary Dropdown ===== */

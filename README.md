@@ -11,7 +11,6 @@ EcoDry is a comprehensive **Smart Food Drying System** that leverages real-time 
 - 🌍 Fully responsive design (mobile, tablet, desktop)
 - 📱 Touch-friendly interface with accessibility support
 - 🔄 Date range data analysis with environmental assessment
-- 💬 Intelligent chatbot assistant (DryBot)
 
 ---
 
@@ -284,21 +283,6 @@ Query Parameters:
 - **Favorable** → Most conditions optimal
 - **Moderately Suitable** → Mixed conditions
 - **Not Suitable** → Poor conditions
-
----
-
-## 🤖 DryBot Chatbot
-
-### Features
-- 💬 Intelligent question answering
-- 📊 Real-time sensor data integration
-- 🌧️ Rain prediction alerts
-- 💡 Drying recommendations
-- ⚡ Energy status reporting
-
-### Available on
-- Dashboard page
-- Forecasting page
 
 ---
 

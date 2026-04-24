@@ -61,11 +61,6 @@
                     style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 10px; border-radius: 50%; cursor: pointer;">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                <button id="chatBotIconToolbar" onclick="toggleChat()" class="theme-btn"
-                    style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 10px; border-radius: 50%; cursor: pointer; position: relative;">
-                    <i class="fa-solid fa-robot"></i>
-                    <span class="bot-notification-toolbar" style="position: absolute; top: 2px; right: 2px; background: #ef4444; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">1</span>
-                </button>
             </div>
 
             <div class="dashboard-container">
@@ -211,36 +206,6 @@
                             <i class="fa-regular fa-clock"></i> <span id="time">Waiting for data...</span>
                         </div>
                     </aside>
-                </div>
-            </div>
-
-            <!-- CHATBOT WINDOW -->
-            <div id="dryBotWindow" class="drybot-window">
-                <div class="drybot-header">
-                    <div class="drybot-title">
-                        <i class="fa-solid fa-robot"></i> DryBot
-                    </div>
-                    <button class="drybot-close" onclick="toggleChat()">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-                <div id="chatMessages" class="drybot-messages">
-                    <div class="msg bot">
-                        <strong>Welcome to DryBot!</strong> 👋<br><br>
-                        I'm your intelligent drying assistant. I can help you understand the dashboard and answer questions about:<br><br>
-                        • Current drying conditions<br>
-                        • Temperature, humidity, and solar radiation<br>
-                        • How long drying will take<br>
-                        • Optimization recommendations<br>
-                        • System alerts and warnings<br><br>
-                        <em>Ask me anything!</em>
-                    </div>
-                </div>
-                <div class="drybot-input-area">
-                    <input type="text" id="userMsg" class="drybot-input" placeholder="Ask about drying conditions..." onkeypress="handleChat(event)" />
-                    <button class="drybot-send" onclick="sendChat()">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
                 </div>
             </div>
 
