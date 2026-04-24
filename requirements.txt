@@ -6,3 +6,11 @@ scikit-learn
 joblib
 xgboost
 gunicorn
+flask
+flask-cors
+gunicorn
+joblib
+numpy
+pandas
+scikit-learn
+xgboost
